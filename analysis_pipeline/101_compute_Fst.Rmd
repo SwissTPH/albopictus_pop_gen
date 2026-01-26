@@ -1,0 +1,140 @@
+---
+title: "101_compute_Fst"
+author: "Wandrille Duchemin"
+date: "2025-03-06"
+output: html_document
+---
+
+```{r}
+library(adegenet)
+library(pegas)
+library(hierfstat)
+```
+
+## reading the data
+
+```{r}
+vcfFile = '053_removing_siblings/FM_0.70_mD_2_MD_30_FMi_0.35_LD_thin.siblings_removed.vcf.gz'
+
+# reading files in adegenet format: https://cran.r-project.org/web/packages/pegas/vignettes/ReadingFiles.pdf
+loci_data = read.vcf( vcfFile , to=20000 )
+genind_data = loci2genind(loci_data)
+genind_data
+```
+
+adding population data 
+```{r}
+pop_table = read.table('/scicore/home/muellepi/GROUP/albopictus/info/albo_global_pops_UNSD.txt')
+colnames( pop_table ) = c('indID','population','nativeInvaded')
+rownames( pop_table ) =  paste( pop_table$indID , pop_table$indID , sep='_' )
+
+## also preparing the table with the samples in the expected order for further selection of native/invasive
+pop_table = pop_table[ rownames( genind_data@tab  ) ,  ]
+```
+
+### Fst all native / invaded
+
+```{r}
+pop(genind_data) = pop_table[ , 'nativeInvaded' ]
+
+start.time <- Sys.time()
+#
+matFst <- genet.dist(genind_data, method = "Nei87")
+#
+end.time <- Sys.time()
+
+time.taken <- end.time - start.time
+time.taken
+```
+
+```{r}
+matFst
+```
+> Comparable, but not equal to 0.05077 we get in python...
+> Also, the R version is super slow
+
+### Fst populations
+
+
+```{r}
+pop(genind_data) = pop_table[ , 'population' ]
+
+```
+
+
+```{r}
+
+
+matFst_pop <- genet.dist(genind_data, method = "Nei87")
+matFst_pop
+```
+
+
+```{r}
+df = data.frame( as.matrix( matFst_pop ) )
+row.names( df ) = labels(matFst_pop)
+colnames( df ) = labels(matFst_pop)
+head( df )
+```
+
+```{r}
+write.csv(df , "101_Fst_populations.csv")
+```
+
+## DAPC clusters
+
+```{r}
+df =read.csv("071_DAPC_noIndonesia.4clusters.csv" , row.names = 1)
+cl = apply( df[  ,c('X1' , 'X2' , 'X3' , 'X4' ) ]  , 1 ,which.max )
+table( cl )
+```
+
+```{r}
+sub = genind_data[ names(cl) , ]
+pop(sub) = cl
+
+matFst_cl4 <- genet.dist(sub, method = "Nei87")
+matFst_cl4
+
+```
+```{r}
+df = data.frame( as.matrix( matFst_cl4 ) )
+row.names( df ) = labels(matFst_cl4)
+colnames( df ) = labels(matFst_cl4)
+head( df )
+```
+
+```{r}
+write.csv(df , "101_Fst_DAPC_noIndonesia.4clusters.csv")
+```
+
+
+other clustering:
+
+```{r}
+df =read.csv("071_DAPC_all.3clusters.csv" , row.names = 1)
+cl = apply( df[  ,c('X1' , 'X2' , 'X3'  ) ]  , 1 ,which.max )
+table( cl )
+```
+```{r}
+sub = genind_data[ names(cl) , ]
+pop(sub) = cl
+
+matFst_cl3 <- genet.dist(sub, method = "Nei87")
+matFst_cl3
+
+```
+```{r}
+df = data.frame( as.matrix( matFst_cl3 ) )
+row.names( df ) = labels(matFst_cl3)
+colnames( df ) = labels(matFst_cl3)
+head( df )
+```
+
+```{r}
+write.csv(df , "101_Fst_DAPC_all.3clusters.csv")
+```
+
+
+
+
