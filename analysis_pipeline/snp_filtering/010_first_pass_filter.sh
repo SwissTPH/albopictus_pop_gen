@@ -14,10 +14,10 @@ ml VCFtools
 
 # Input files
 VCF_IN=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_calling/populations/populations.snps.vcf
-REPEAT_BED=/scicore/home/muellepi/GROUP/albopictus/albo_repeats/ae_albopictus_scaffolds.fa.bed
+REPEAT_BED=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/repeats_albo/ae_albopictus/ae_albopictus_scaffolds.bed
 
 # Output file
-VCF_OUT=populations.snps.filtered1.vcf
+VCF_OUT=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/010_first_pass_filter/populations.snps.filtered1.vcf
 
 # apply filters
 vcftools --vcf $VCF_IN \
