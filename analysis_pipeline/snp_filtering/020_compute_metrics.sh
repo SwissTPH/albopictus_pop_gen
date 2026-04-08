@@ -16,10 +16,9 @@ ml VCFtools
 ml Python/3.14
 
 #directories
-BASE_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering
-VCF_IN=${BASE_DIR}/010_first_pass_filter/populations.snps.filtered1.vcf.gz
-SCRIPT_DIR=${BASE_DIR}/020_compute_metrics
-OUT_FOLDER=${BASE_DIR}/020_compute_metrics/020_metrics
+VCF_IN=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/010_first_pass_filter/populations.snps.filtered1.vcf.gz
+SCRIPT_DIR=/scicore/home/muellepi/marmor0000/git_repositories/albopictus_pop_gen/analysis_pipeline/python/
+OUT_FOLDER=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/020_compute_metrics/020_metrics
 
 #compute matrices
 python3 ${SCRIPT_DIR}/compute_allele_balance.py $VCF_IN > ${OUT_FOLDER}/allele_balance.tsv
