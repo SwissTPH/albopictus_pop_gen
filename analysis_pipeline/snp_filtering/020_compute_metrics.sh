@@ -13,7 +13,6 @@ set -euo pipefail
 
 #load modules
 ml VCFtools
-ml Python/3.14
 
 #directories
 VCF_IN=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/010_first_pass_filter/populations.snps.filtered1.vcf.gz
