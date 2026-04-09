@@ -58,7 +58,7 @@ if __name__ == '__main__':
             if ttl_het > 0:
                 balance = ref_het / ttl_het
             else:
-                balance = 'NA'
+                balance = '0'
             print( pre[0] , pre[1] , pre[3] , pre[4], balance , sep= '\t' )
 
 
