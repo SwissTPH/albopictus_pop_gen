@@ -104,22 +104,31 @@ vcftools --gzvcf ${VCF_OUT}.vcf.gz --depth --out $PREFIX
 vcftools --gzvcf ${VCF_OUT}.vcf.gz --missing-indv --out $PREFIX
 
 #---------------------------------------
-#STEP 5: PCA
+# STEP 5: PCA
+
+#convert VCF to BED
 plink --vcf ${VCF_OUT}.vcf.gz \
-  --double-id --allow-extra-chr --set-missing-var-ids @:# \
-  --make-bed --pca 300 \
+  --double-id \
+  --allow-extra-chr \
+  --make-bed \
+  --out ${OUT_FOLDER}/LD_thin_tmp
+
+#PCA on full dataset
+plink --bfile ${OUT_FOLDER}/LD_thin_tmp \
+  --pca 300 \
   --out ${OUT_FOLDER}/LD_thin
 
-plink --vcf ${VCF_OUT}.vcf.gz \
+#PCA native subset
+plink --bfile ${OUT_FOLDER}/LD_thin_tmp \
   --keep ${OUT_FOLDER}/tmp.filter_native \
-  --double-id --allow-extra-chr --set-missing-var-ids @:# \
-  --make-bed --pca 300 \
+  --pca 300 \
   --out ${OUT_FOLDER}/LD_thin.native
 
-plink --vcf ${VCF_OUT}.vcf.gz \
+#PCA invaded subset
+plink --bfile ${OUT_FOLDER}/LD_thin_tmp \
   --keep ${OUT_FOLDER}/tmp.filter_invaded \
-  --double-id --allow-extra-chr --set-missing-var-ids @:# \
-  --make-bed --pca 300 \
+  --pca 300 \
   --out ${OUT_FOLDER}/LD_thin.invaded
+
 
 python3 ${SCRIPT_DIR}/regroup_metrics.py ${OUT_FOLDER}/LD_thin ${OUT_FOLDER}/LD_thin.
