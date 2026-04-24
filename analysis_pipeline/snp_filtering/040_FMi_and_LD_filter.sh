@@ -79,19 +79,29 @@ FILTER_INVADED=${OUT_FOLDER}/first_step.in.invaded.txt
 awk '{print $1"_"$1" "$1"_"$1}' "$FILTER_NATIVE" > "${OUT_FOLDER}/tmp.filter_native"
 awk '{print $1"_"$1" "$1"_"$1}' "$FILTER_INVADED" > "${OUT_FOLDER}/tmp.filter_invaded"
 
-#LD pruning
+# 1. Convert VCF → stable PLINK dataset
 plink --vcf $VCF_IN_GZ \
+  --double-id \
+  --allow-extra-chr \
+  --make-bed \
+  --out ${OUT_FOLDER}/LD_base
+
+# 2. Filter individuals + LD pruning on BED (stable)
+plink --bfile ${OUT_FOLDER}/LD_base \
   --keep $FILTER_INDV \
   --indep-pairwise 50 10 0.1 \
-  --no-sex --double-id --allow-extra-chr --set-missing-var-ids @:# \
   --out ${OUT_FOLDER}/LD_thin
 
-#apply pruning
-plink --vcf $VCF_IN_GZ \
+# 3. Apply pruning
+plink --bfile ${OUT_FOLDER}/LD_base \
   --keep $FILTER_INDV \
   --extract ${OUT_FOLDER}/LD_thin.prune.in \
+  --make-bed \
+  --out ${OUT_FOLDER}/LD_pruned
+
+# 4. Convert to VCF if needed
+plink --bfile ${OUT_FOLDER}/LD_pruned \
   --recode vcf bgz \
-  --no-sex --double-id --allow-extra-chr --set-missing-var-ids @:# \
   --out $VCF_OUT
 
 #----------------------------------------
@@ -105,7 +115,6 @@ vcftools --gzvcf ${VCF_OUT}.vcf.gz --missing-indv --out $PREFIX
 
 #---------------------------------------
 # STEP 5: PCA
-
 #convert VCF to BED
 plink --vcf ${VCF_OUT}.vcf.gz \
   --double-id \
