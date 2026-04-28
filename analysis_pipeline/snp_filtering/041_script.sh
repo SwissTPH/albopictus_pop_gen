@@ -105,7 +105,7 @@ plink --bfile ${OUT_FOLDER}/plink_data \
       --double-id \
       --allow-extra-chr \
       --extract ${OUT_FOLDER}/LD_thin.prune.in \
-      --recode vcf-iid bgz \
+      --recode vcf bgz \
       --out $VCF_OUT
 
 #----------------------------------------
