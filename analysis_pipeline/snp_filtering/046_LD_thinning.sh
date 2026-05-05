@@ -20,12 +20,14 @@ module load VCFtools
 OUT_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/046_LD_thinning
 SCRIPT_DIR=/scicore/home/muellepi/marmor0000/git_repositories/albopictus_pop_gen/analysis_pipeline/python
 VCF_IN=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/031_test_thresholds/031_filter_FM_0.65_mD_3_MD_30/populations.snps.filter_FM_0.65_mD_3_MD_30.vcf.gz
+INDV=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/046_LD_thinning/keep10.txt
 
 # STEP 1: LD based thinning
 # convert vcf to bed file
 plink \
     --vcf ${VCF_IN} \
     --double-id \
+    --keep $INDV \
     --allow-extra-chr \
     --make-bed \
     --out ${OUT_DIR}/data
