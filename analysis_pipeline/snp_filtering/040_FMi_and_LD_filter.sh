@@ -13,9 +13,10 @@
 set -euo pipefail
 
 #load modules
-ml purge
-ml VCFtools
-ml PLINK/1.90-beta-7.6-x86_64
+module purge
+module load PLINK/1.90-beta-7.6-x86_64
+module load BCFtools
+module load VCFtools
 
 #directories
 VCF_IN=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/021_inspect_metrics/populations.snps.filtered2.vcf.gz
@@ -68,7 +69,7 @@ python3 ${SCRIPT_DIR}/get_individual_lists_with_fraction_missing_threshold.py \
 
 #-----------------------------------------
 #STEP 3: LD thinning
-VCF_IN_GZ=${VCF_OUT1}.gz
+VCF_IN_GZ=$VCF_OUT1.gz
 VCF_OUT=${OUT_FOLDER}/${EXP2}_LD_thin
 
 FILTER_INDV=${OUT_FOLDER}/first_step.in.txt
@@ -79,65 +80,48 @@ FILTER_INVADED=${OUT_FOLDER}/first_step.in.invaded.txt
 awk '{print $1"_"$1" "$1"_"$1}' "$FILTER_NATIVE" > "${OUT_FOLDER}/tmp.filter_native"
 awk '{print $1"_"$1" "$1"_"$1}' "$FILTER_INVADED" > "${OUT_FOLDER}/tmp.filter_invaded"
 
-# 1. Convert VCF → stable PLINK dataset
-plink --vcf $VCF_IN_GZ \
-  --double-id \
-  --allow-extra-chr \
-  --make-bed \
-  --out ${OUT_FOLDER}/LD_base
+# convert vcf to bed file
+plink \
+    --vcf ${VCF_IN_GZ} \
+    --keep ${FILTER_INDV} \
+    --double-id \
+    --allow-extra-chr \
+    --make-bed \
+    --out ${OUT_FOLDER}/data
 
-# 2. Filter individuals + LD pruning on BED (stable)
-plink --bfile ${OUT_FOLDER}/LD_base \
-  --keep $FILTER_INDV \
-  --indep-pairwise 50 10 0.1 \
-  --out ${OUT_FOLDER}/LD_thin
+# LD pruning
+plink \
+    --bfile ${OUT_FOLDER}/data \
+    --allow-extra-chr \
+    --indep-pairwise 50 10 0.1 \
+    --out ${OUT_FOLDER}/pruned
 
-# 3. Apply pruning
-plink --bfile ${OUT_FOLDER}/LD_base \
-  --keep $FILTER_INDV \
-  --extract ${OUT_FOLDER}/LD_thin.prune.in \
-  --make-bed \
-  --out ${OUT_FOLDER}/LD_pruned
+# create .txt file with all SNPs to keep
+cut -f1 ${OUT_FOLDER}/pruned.prune.in > ${OUT_FOLDER}/snps_to_keep.txt
 
-# 4. Convert to VCF if needed
-plink --bfile ${OUT_FOLDER}/LD_pruned \
-  --recode vcf bgz \
-  --out $VCF_OUT
+# extract SNPs from initial .vcf file
+bcftools view \
+    -i "ID=@${OUT_FOLDER}/snps_to_keep.txt" \
+    -Ou \
+    ${VCF_IN_GZ} \
+| bcftools sort \
+    -Oz \
+    -o ${OUT_FOLDER}/data_pruned.vcf.gz
 
-#----------------------------------------
-#STEP 4: metrics after LD thinning
+# index AFTER sorting
+bcftools index ${OUT_FOLDER}/data_pruned.vcf.gz
+
+VCF_FINAL=${OUT_FOLDER}/data_pruned.vcf.gz
+
+
+#------------------------------------------------
+# STEP 4: compute metrics
 PREFIX=${OUT_FOLDER}/LD_thin
-vcftools --gzvcf ${VCF_OUT}.vcf.gz --freq2 --max-alleles 2 --out $PREFIX
-vcftools --gzvcf ${VCF_OUT}.vcf.gz --site-mean-depth --out $PREFIX
-vcftools --gzvcf ${VCF_OUT}.vcf.gz --missing-site --out $PREFIX
-vcftools --gzvcf ${VCF_OUT}.vcf.gz --depth --out $PREFIX
-vcftools --gzvcf ${VCF_OUT}.vcf.gz --missing-indv --out $PREFIX
 
-#---------------------------------------
-# STEP 5: PCA
-#convert VCF to BED
-plink --vcf ${VCF_OUT}.vcf.gz \
-  --double-id \
-  --allow-extra-chr \
-  --make-bed \
-  --out ${OUT_FOLDER}/LD_thin_tmp
+vcftools --gzvcf ${VCF_FINAL} --freq2 --max-alleles 2 --out $PREFIX
+vcftools --gzvcf ${VCF_FINAL} --site-mean-depth --out $PREFIX
+vcftools --gzvcf ${VCF_FINAL} --missing-site --out $PREFIX
+vcftools --gzvcf ${VCF_FINAL} --depth --out $PREFIX
+vcftools --gzvcf ${VCF_FINAL} --missing-indv --out $PREFIX
 
-#PCA on full dataset
-plink --bfile ${OUT_FOLDER}/LD_thin_tmp \
-  --pca 300 \
-  --out ${OUT_FOLDER}/LD_thin
-
-#PCA native subset
-plink --bfile ${OUT_FOLDER}/LD_thin_tmp \
-  --keep ${OUT_FOLDER}/tmp.filter_native \
-  --pca 300 \
-  --out ${OUT_FOLDER}/LD_thin.native
-
-#PCA invaded subset
-plink --bfile ${OUT_FOLDER}/LD_thin_tmp \
-  --keep ${OUT_FOLDER}/tmp.filter_invaded \
-  --pca 300 \
-  --out ${OUT_FOLDER}/LD_thin.invaded
-
-
-python3 ${SCRIPT_DIR}/regroup_metrics.py ${OUT_FOLDER}/LD_thin ${OUT_FOLDER}/LD_thin.
+python3 ${SCRIPT_DIR}/regroup_metrics.py $PREFIX ${PREFIX}
