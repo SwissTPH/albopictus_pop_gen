@@ -50,11 +50,13 @@ plink \
 # export vcf file
 plink \
     --bfile ${OUT_DIR}/data_pruned \
-    --recode vcf \
+    --recode vcf-iid \
     --allow-extra-chr \
     --out ${OUT_DIR}/data_pruned
 
-VCF_FINAL=${OUT_DIR}/data_pruned.vcf
+tr -d '\000' < ${OUT_DIR}/data_pruned.vcf > ${OUT_DIR}/data_pruned.clean.vcf
+
+VCF_FINAL=${OUT_DIR}/data_pruned.clean.vcf
 
 # STEP 2: compute metrics
 PREFIX=${OUT_DIR}/LD_thin
