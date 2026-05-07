@@ -1,7 +1,7 @@
 # albopictus_pop_gen
 Repository with analysis pipeline of Ae. albopictus ddRAD sequencing data
 
-##read_processing
+## read_processing
 ### 001_demultiplexing.sh
 Paired-end ddRADseq reads are demultiplexed using `process_radtags` from Stacks. Reads with mapping quality < Q10 are discarded (`-q`).
 
