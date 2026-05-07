@@ -11,15 +11,15 @@
 
 set -euo pipefail
 
-enable-software-stack-compute-canada
-module load stacks/2.67
+PROCESS_RADTAGS=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v3/Compiler/gcccore/stacks/2.67/bin/process_radtags
 
 # Paths
-RAW_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/raw_data/
+RAW_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/raw_data/lib1
 BARCODE_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/raw_data/barcodes/albo_1.txt
 OUT_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/demultiplexed
 
-process_radtags \
+
+$PROCESS_RADTAGS \
     -P \
     -p $RAW_DIR \
     -b ${BARCODE_DIR} \
@@ -28,5 +28,4 @@ process_radtags \
     --inline_inline \
     --renz_1 nlaIII \
     --renz_2 mluCI \
-    --filename-filter Final_albo_1
 
