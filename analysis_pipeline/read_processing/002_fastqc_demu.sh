@@ -11,8 +11,9 @@
 #SBATCH --mail-user=sarah.marmorosch@swisstph.ch
 
 
-FILELIST=/scicore/home/muellepi/GROUP/albopictus/cleaned/combined_fq_albo/fq_list.txt
-OUTPUT=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/fastqc/
+#directories
+FILELIST=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/demultiplexed/fq_list.txt
+OUTPUT=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/fastqc/fastqc_multiqc_demu/
 
 mkdir -p $OUTPUT
 
