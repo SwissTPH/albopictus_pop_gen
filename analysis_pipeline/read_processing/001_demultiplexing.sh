@@ -3,7 +3,7 @@
 #SBATCH --mem=16G
 #SBATCH --cpus-per-task=4
 #SBATCH --time=24:00:00
-#SBATCH --qos=24hours
+#SBATCH --qos=1day
 #SBATCH --output=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/demultiplexed/err_out/logs.out
 #SBATCH --error=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/demultiplexed/err_out/log.err
 #SBATCH --mail-type=ALL
@@ -11,7 +11,8 @@
 
 set -euo pipefail
 
-module load Stacks/2.2-foss-2016b
+enable-software-stack-compute-canada
+module load stacks/2.67
 
 # Paths
 RAW_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/raw_data/
