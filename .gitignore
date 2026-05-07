@@ -4,4 +4,4 @@
 *.out
 *.err
 .ipynb_checkpoints/
-*.nfs
+.nfs*
