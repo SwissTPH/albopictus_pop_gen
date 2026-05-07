@@ -4,21 +4,23 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --mem-per-cpu=10G
 #SBATCH --array=1-566
-#SBATCH --output=/scicore/home/muellepi/GROUP/albopictus/alignments/AlboAlign/NewGenome/err_out/first_alignment_%A_%a.out
-#SBATCH --error=/scicore/home/muellepi/GROUP/albopictus/alignments/AlboAlign/NewGenome/err_out/first_alignment_%A_%a.ERROR.err
+#SBATCH --output=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/alignment/err_out/alignment__%a.out
+#SBATCH --error=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/alignment/err_out/alignment__%a.ERROR.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=sarah.marmorosch@swisstph.ch
 
 set -euo pipefail
 
 # Load the module
-module load BWA/0.7.17-goolf-1.7.20
-module load SAMtools/1.7-goolf-1.7.20
-module load BamTools/2.4.0-goolf-1.7.20
+ml purge
+module load BWA/0.7.18-GCCcore-12.3.0
+module load SAMtools/1.18-GCC-12.3.0
+#module load BamTools/2.4.0-goolf-1.7.20
+module load BamTools/2.5.2-GCC-12.3.0
 
 # Directories
-FASTQ_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/cleaned
-OUT_DIR=/scicore/home/muellepi/GROUP/albopictus/alignments/AlboAlign/NewGenome/
+FASTQ_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/demultiplexed/
+OUT_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/alignment/
 GENOME=/scicore/home/muellepi/GROUP/albopictus/genome/albogenome/nuclear/Yale_genome/ae_albopictus_scaffolds.fa
 SAMPLESHEET=${FASTQ_DIR}/all_samples.txt
 
