@@ -12,11 +12,9 @@
 set -euo pipefail
 
 # Load the module
-ml purge
-module load BWA/0.7.18-GCCcore-12.3.0
-module load SAMtools/1.18-GCC-12.3.0
-#module load BamTools/2.4.0-goolf-1.7.20
-module load BamTools/2.5.2-GCC-12.3.0
+module load BWA/0.7.17-goolf-1.7.20
+module load SAMtools/1.7-goolf-1.7.20
+module load BamTools/2.4.0-goolf-1.7.20
 
 # Directories
 FASTQ_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/demultiplexed/
