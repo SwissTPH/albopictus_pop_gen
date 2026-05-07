@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-PROCESS_RADTAGS=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v3/Compiler/gcccore/stacks/2.67/bin/process_radtags
+module load Stacks/2.2-foss-2016b
 
 # Paths
 RAW_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/raw_data/lib1
@@ -19,7 +19,7 @@ BARCODE_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/raw_data/barco
 OUT_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/demultiplexed
 
 
-$PROCESS_RADTAGS \
+process_radtags \
     -P \
     -p $RAW_DIR \
     -b ${BARCODE_DIR} \
