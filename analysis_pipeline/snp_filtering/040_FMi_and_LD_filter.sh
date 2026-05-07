@@ -20,7 +20,7 @@ module load VCFtools
 
 #directories
 VCF_IN=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/021_inspect_metrics/populations.snps.filtered2.vcf.gz
-OUT_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/040_FMi_and_LD_filter/
+OUT_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/040_FMi_and_LD_filter
 SEEDFILE=/scicore/home/muellepi/marmor0000/git_repositories/albopictus_pop_gen/analysis_pipeline/snp_filtering/040_filters.txt
 SCRIPT_DIR=/scicore/home/muellepi/marmor0000/git_repositories/albopictus_pop_gen/analysis_pipeline/python
 
@@ -77,8 +77,8 @@ FILTER_NATIVE=${OUT_FOLDER}/first_step.in.native.txt
 FILTER_INVADED=${OUT_FOLDER}/first_step.in.invaded.txt
 
 #fix PLINK IDs
-awk '{print $1"_"$1" "$1"_"$1}' "$FILTER_NATIVE" > "${OUT_FOLDER}/tmp.filter_native"
-awk '{print $1"_"$1" "$1"_"$1}' "$FILTER_INVADED" > "${OUT_FOLDER}/tmp.filter_invaded"
+awk '{print $1, $1}' "$FILTER_NATIVE" > "${OUT_FOLDER}/tmp.filter_native"
+awk '{print $1, $1}' "$FILTER_INVADED" > "${OUT_FOLDER}/tmp.filter_invaded"
 
 # convert vcf to bed file
 plink \
@@ -96,22 +96,37 @@ plink \
     --indep-pairwise 50 10 0.1 \
     --out ${OUT_FOLDER}/pruned
 
-# create .txt file with all SNPs to keep
-cut -f1 ${OUT_FOLDER}/pruned.prune.in > ${OUT_FOLDER}/snps_to_keep.txt
 
 # extract SNPs from initial .vcf file
+awk '{print $1}' "$FILTER_INDV" > "${OUT_FOLDER}/filter_indv"
+VCF_OUT=${OUT_FOLDER}/${EXP2}_LD_thin.vcf.gz
+
+
 bcftools view \
-    -i "ID=@${OUT_FOLDER}/snps_to_keep.txt" \
+    -S ${OUT_FOLDER}/filter_indv \
     -Ou \
     ${VCF_IN_GZ} \
+| bcftools view \
+    -i "ID=@${OUT_FOLDER}/pruned.prune.in" \
+    -Ou \
 | bcftools sort \
     -Oz \
-    -o ${OUT_FOLDER}/data_pruned.vcf.gz
+    -o ${VCF_OUT}
 
 # index AFTER sorting
-bcftools index ${OUT_FOLDER}/data_pruned.vcf.gz
+bcftools index ${VCF_OUT}
 
-VCF_FINAL=${OUT_FOLDER}/data_pruned.vcf.gz
+VCF_FINAL=${VCF_OUT}
+
+
+echo "SNP count pre-thinning:"
+bcftools view -H ${VCF_IN_GZ} | wc -l
+
+echo "SNP count post-thinning:"
+bcftools view -H ${VCF_FINAL} | wc -l
+
+echo "Final sample count:"
+bcftools query -l ${VCF_FINAL} | wc -l
 
 
 #------------------------------------------------
@@ -125,3 +140,38 @@ vcftools --gzvcf ${VCF_FINAL} --depth --out $PREFIX
 vcftools --gzvcf ${VCF_FINAL} --missing-indv --out $PREFIX
 
 python3 ${SCRIPT_DIR}/regroup_metrics.py $PREFIX ${PREFIX}
+
+
+#------------------------------------------------
+# STEP 5: PCA
+# prepare PLINK files once
+plink --vcf ${VCF_FINAL} \
+      --double-id \
+      --allow-extra-chr \
+      --set-missing-var-ids @:# \
+      --make-bed \
+      --out ${OUT_FOLDER}/LD_thin
+
+# PCA all
+plink --bfile ${OUT_FOLDER}/LD_thin \
+      --double-id \
+      --allow-extra-chr \
+      --pca 300 \
+      --out ${OUT_FOLDER}/LD_thin
+
+# PCA native
+plink --bfile ${OUT_FOLDER}/LD_thin \
+      --double-id \
+      --allow-extra-chr \
+      --keep ${OUT_FOLDER}/tmp.filter_native \
+      --pca 300 \
+      --out ${OUT_FOLDER}/LD_thin.native
+
+# PCA invaded
+plink --bfile ${OUT_FOLDER}/LD_thin \
+      --double-id \
+      --allow-extra-chr \
+      --keep ${OUT_FOLDER}/tmp.filter_invaded \
+      --pca 300 \
+      --out ${OUT_FOLDER}/LD_thin.invaded
+
