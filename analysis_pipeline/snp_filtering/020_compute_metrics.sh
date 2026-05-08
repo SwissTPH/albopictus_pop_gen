@@ -16,7 +16,7 @@ ml VCFtools
 
 #directories
 VCF_IN=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/010_first_pass_filter/populations.snps.filtered1.vcf.gz
-SCRIPT_DIR=/scicore/home/muellepi/marmor0000/git_repositories/albopictus_pop_gen/analysis_pipeline/python/
+SCRIPT_DIR=/scicore/home/muellepi/marmor0000/git_repositories/albopictus_pop_gen/analysis_pipeline/utils/
 OUT_FOLDER=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/020_compute_metrics/020_metrics
 
 #compute matrices
