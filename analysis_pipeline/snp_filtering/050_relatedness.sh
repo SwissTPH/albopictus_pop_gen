@@ -18,22 +18,20 @@ module load VCFtools
 #directories
 VCF_IN=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/snp_filtering/040_FMi_and_LD_filter/FM_0.65_mD_3_MD_30_FMi_0.3/FM_0.65_mD_3_MD_30_FMi_0.3_LD_thin.vcf.gz
 OUT_DIR=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/relatedness_analysis/050_relatedness_computation/
-SCRIPT_DIR=/scicore/home/muellepi/marmor0000/git_repositories/albopictus_pop_gen/analysis_pipeline/utils
+#SCRIPT_DIR=/scicore/home/muellepi/marmor0000/git_repositories/albopictus_pop_gen/analysis_pipeline/utils
 
-#rename sample IDs for PLINK compatibility
-python3 ${SCRIPT_DIR}/rename_vcf_gzip_samples_for_plink.py ${VCF_IN} ${OUT_DIR}/LD_thin.renamed.vcf.gz
 
 #relatedness with vcftools
 vcftools \
-    --gzvcf ${OUT_DIR}/LD_thin.renamed.vcf.gz \
+    --gzvcf ${VCF_IN} \
     --relatedness2 \
     --out ${OUT_DIR}/LD_thin
 
 
 #create genomic relationship matrix with PLINK
 plink \
-    --vcf ${OUT_DIR}/LD_thin.renamed.vcf.gz \
-    --id-delim @ \
+    --vcf ${VCF_IN} \
+    --double-id \
     --allow-extra-chr \
     --make-grm-gz no-gz \
     --out ${OUT_DIR}/LD_thin
