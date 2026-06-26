@@ -13,7 +13,7 @@ This repository contains a ddRAD-seq analysis pipeline for <i>Aedes albopictus</
 <b>006_populations_albo.sh</b>: Filtering of loci using `populations` from Stacks by retaining loci that are present in at least 25% (`-r 0.25`) of individuals within a population and export of dataset in VCF format (`populations.snps.vcf`) for downstream analyses.
 
 ## SNP Filtering
-<b>010_first_pass_filter.sh<b>: Initial filtering of the SNP dataset (<code>populations.snps.vcf</code>) using `VCFtools` by removing indels, excluding SNPs located within repetitive regions of the <i>Ae. albopictus</i> genome and retaining only SNPs genotyped in at least 50% of individuals. Repeat regions were identified with RepeatMasker (<b>repeatmasker_albopictus.sh</b>). The filtered dataset was exported as <code>populations.snps.filtered1.vcf</code>.
+<b>010_first_pass_filter.sh</b>: Initial filtering of the SNP dataset (<code>populations.snps.vcf</code>) using `VCFtools` by removing indels, excluding SNPs located within repetitive regions of the <i>Ae. albopictus</i> genome and retaining only SNPs genotyped in at least 50% of individuals. Repeat regions were identified with RepeatMasker (<b>repeatmasker_albopictus.sh</b>). The filtered dataset was exported as <code>populations.snps.filtered1.vcf</code>.
 
 <b>020_compute_metrics.sh</b>: Calculation of site-level and individual-level quality metrics. Site- and individual-level metrics were inspected and in a Jupyter notebook (<b>021_inspect_metrics.ipynb</b>) to assess data quality and support filtering decisions. Based on these inspections, SNPs were filtered based on minimum allele count (MAC = 3), maximum sequencing depth (≤ 30) and allele balance (between 0.25 and 0.75 or below 0.01 for keeping fixed alleles).
 
