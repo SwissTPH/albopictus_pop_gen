@@ -1,7 +1,7 @@
 # albopictus_pop_gen
 This repository contains a ddRAD-seq analysis pipeline for <i>Aedes albopictus</i>. The workflow was developed to process paired-end ddRAD-seq data generated from libraries prepared with the NlaIII and MluCl restriction enzymes.
 
-## Read Processing
+## Sequence Processing and Variant Calling
 <b>001_demultiplexing.sh</b>: Demultiplexing of raw ddRAD reads using `process_radtags` from Stacks. Reads with low quality < Q10 were discarded (`q`). This script was run separately for each sequencing library.
 
 <b>002_fastqc_demu.sh</b>: `FastQC` quality assessment of demultiplexed reads and combining all FastQC reports using `MultiQC` (<b>003_multiqc_demu.sh</b>).
