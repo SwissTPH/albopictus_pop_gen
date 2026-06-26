@@ -17,7 +17,7 @@ OUT_FOLDER=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/popgen_analyses
 POPMAP=/scicore/home/muellepi/marmor0000/albopictus_ddRADseq/popmap_albo.txt
 
 #create keep file with populations to include in PCA
-awk '($2=="Albania" || $2=="Bulgaria" || $2=="Croatia" || $2=="Greece" || $2=="Italy" || $2=="Montenegro" || $2=="Serbia" || $2=="Slovenia" || $2=="TurkeyWest" || $2=="TurkeyEast" || $2=="Israel" || $2=="Georgia") {print $1, $1}' \
+awk '$2=="TurkeyEast" || $2=="TurkeyWest" || $2=="Albania" || $2=="Bulgaria" || $2=="Croatia" || $2=="Greece" || $2=="Montenegro" || $2=="Serbia" || $2=="Slovenia" || $2=="Israel" || $2=="Georgia" {print $1, $1}' \
 $POPMAP > ${OUT_FOLDER}/pops_eastern_europe.keep
 
 # PCA
@@ -35,6 +35,6 @@ plink --bfile ${OUT_FOLDER}/LD_thin_pops_eastern_europe \
       --allow-extra-chr \
       --keep ${OUT_FOLDER}/pops_eastern_europe.keep \
       --pca 300 \
-      --out ${OUT_FOLDER}/FM_0.65_mD_3_MD_30_FMi_0.3_LD_thin_eastern_europe
+      --out ${OUT_FOLDER}/FM_0.65_mD_3_MD_30_FMi_0.3_LD_thin_eastern_europe_noITA
 
 
