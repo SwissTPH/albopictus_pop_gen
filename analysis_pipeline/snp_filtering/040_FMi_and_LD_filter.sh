@@ -141,37 +141,3 @@ vcftools --gzvcf ${VCF_FINAL} --missing-indv --out $PREFIX
 
 python3 ${SCRIPT_DIR}/regroup_metrics.py $PREFIX ${PREFIX}
 
-
-#------------------------------------------------
-# STEP 5: PCA
-# prepare PLINK files once
-plink --vcf ${VCF_FINAL} \
-      --double-id \
-      --allow-extra-chr \
-      --set-missing-var-ids @:# \
-      --make-bed \
-      --out ${OUT_FOLDER}/LD_thin
-
-# PCA all
-plink --bfile ${OUT_FOLDER}/LD_thin \
-      --double-id \
-      --allow-extra-chr \
-      --pca 300 \
-      --out ${OUT_FOLDER}/LD_thin
-
-# PCA native
-plink --bfile ${OUT_FOLDER}/LD_thin \
-      --double-id \
-      --allow-extra-chr \
-      --keep ${OUT_FOLDER}/tmp.filter_native \
-      --pca 300 \
-      --out ${OUT_FOLDER}/LD_thin.native
-
-# PCA invaded
-plink --bfile ${OUT_FOLDER}/LD_thin \
-      --double-id \
-      --allow-extra-chr \
-      --keep ${OUT_FOLDER}/tmp.filter_invaded \
-      --pca 300 \
-      --out ${OUT_FOLDER}/LD_thin.invaded
-
