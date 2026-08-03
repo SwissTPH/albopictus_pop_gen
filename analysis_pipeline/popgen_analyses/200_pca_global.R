@@ -203,4 +203,90 @@ p12_countries_html <- ggplotly(p12_global, tooltip = "text")
 saveWidget(p12_countries_html, file.path(path, "pca12_global_countries.html"), selfcontained = TRUE)
 
 
+#-------------------------------------------------------------------------------
+# plot PC1 vs PC3
+
+# axis labels
+xlab_pc1 <- paste0("PC1 (", round(pc_var[1], 1), "%)")
+ylab_pc3 <- paste0("PC3 (", round(pc_var[3], 1), "%)")
+
+p13_global <- ggplot(df_all, aes(PC1, PC3, fill = pop, shape = pop, text = paste("IID:", IID, "<br>Population:", pop))) +
+  # colour = "black" creates the outline, stroke controls its thickness
+  geom_point(size = 4, alpha = 0.95, colour = "black", stroke = 0.4) +
+  
+  # Removed custom breaks so legend lists populations alphabetically
+  scale_fill_manual(values = color_map, breaks = legend_order) +
+  scale_shape_manual(values = shape_map, breaks = legend_order) +
+  
+  labs(title = "All Populations", x = xlab_pc1, y = ylab_pc3, fill = "Population", shape = "Population") +
+  theme_classic() +
+  theme(
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14),
+    plot.title = element_text(size = 18)
+  ) +
+  # Ensures the legend symbols show the neat black border correctly
+  guides(fill = guide_legend(override.aes = list(colour = "black", stroke = 0.4)))
+
+p13_global
+
+ggsave(file.path(path, "pca13_global_countries.png"), p13_global, width = 12, height = 8)
+ggsave(file.path(path, "pca13_global_countries.svg"), p13_global, width = 12, height = 8)
+
+ggplotly(p13_global, tooltip = "text")
+
+#convert ggplot to html and export it
+p13_countries_html <- ggplotly(p13_global, tooltip = "text")
+saveWidget(p13_countries_html, file.path(path, "pca13_global_countries.html"), selfcontained = TRUE)
+
+
+#-------------------------------------------------------------------------------
+# plot PC2 vs PC3
+
+# axis labels
+xlab_pc2 <- paste0("PC2 (", round(pc_var[2], 1), "%)")
+ylab_pc3 <- paste0("PC3 (", round(pc_var[3], 1), "%)")
+
+p23_global <- ggplot(df_all, aes(PC2, PC3, fill = pop, shape = pop, text = paste("IID:", IID, "<br>Population:", pop))) +
+  # colour = "black" creates the outline, stroke controls its thickness
+  geom_point(size = 4, alpha = 0.95, colour = "black", stroke = 0.4) +
+  
+  # Removed custom breaks so legend lists populations alphabetically
+  scale_fill_manual(values = color_map, breaks = legend_order) +
+  scale_shape_manual(values = shape_map, breaks = legend_order) +
+  
+  labs(title = "All Populations", x = xlab_pc2, y = ylab_pc3, fill = "Population", shape = "Population") +
+  theme_classic() +
+  theme(
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14),
+    plot.title = element_text(size = 18)
+  ) +
+  # Ensures the legend symbols show the neat black border correctly
+  guides(fill = guide_legend(override.aes = list(colour = "black", stroke = 0.4)))
+
+p23_global
+
+ggsave(file.path(path, "pca23_global_countries.png"), p23_global, width = 12, height = 8)
+ggsave(file.path(path, "pca23_global_countries.svg"), p23_global, width = 12, height = 8)
+
+ggplotly(p23_global, tooltip = "text")
+
+#convert ggplot to html and export it
+p23_countries_html <- ggplotly(p23_global, tooltip = "text")
+saveWidget(p23_countries_html, file.path(path, "pca23_global_countries.html"), selfcontained = TRUE)
+
+
+
+
+
+
+
+
+
+
 
