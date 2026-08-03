@@ -184,7 +184,7 @@ p12_global <- ggplot(df_all, aes(PC1, PC2, fill = pop, shape = pop, text = paste
   theme_classic() +
   theme(
     legend.text = element_text(size = 14),
-    #legend.title = element_text(size = 16),
+    legend.title = element_text(size = 16),
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),
     plot.title = element_text(size = 18)
@@ -223,7 +223,7 @@ p13_global <- ggplot(df_all, aes(PC1, PC3, fill = pop, shape = pop, text = paste
   theme_classic() +
   theme(
     legend.text = element_text(size = 14),
-    #legend.title = element_text(size = 16),
+    legend.title = element_text(size = 16),
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),
     plot.title = element_text(size = 18)
@@ -262,7 +262,7 @@ p23_global <- ggplot(df_all, aes(PC2, PC3, fill = pop, shape = pop, text = paste
   theme_classic() +
   theme(
     legend.text = element_text(size = 14),
-    #legend.title = element_text(size = 16),
+    legend.title = element_text(size = 16),
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),
     plot.title = element_text(size = 18)
