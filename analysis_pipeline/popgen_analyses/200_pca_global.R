@@ -28,16 +28,17 @@ pop(gl) <- popmap$pop[match(indNames(gl), popmap$IID)]
 
 # Run PCA
 pca <- glPca(gl, nf = 50)
+pca_scaled <- glPca(gl, nf = 50, center = TRUE, scale = TRUE)
 
-df_all <- as.data.frame(pca$scores)
+df_all <- as.data.frame(pca_scaled$scores)
 df_all$pop <- pop(gl) # add population IDs
 df_all$IID <- indNames(gl) # add samples IDs
 
 # calculate variance explained
-pc_var <- 100 * pca$eig / sum(pca$eig)
+pc_var <- 100 * pca_scaled$eig / sum(pca_scaled$eig)
 
 # create scree plot to assess how many PCs to retain for PCA
-plot(var.explained, type = "b", pch = 19, xlab = "Principal Component", ylab = "Variance explained (%)")
+plot(pc_var, type = "b", pch = 19, xlab = "Principal Component", ylab = "Variance explained (%)")
 
 #-------------------------------------------------------------------------------
 # define colors and shapes for countries
@@ -64,7 +65,7 @@ color_map <- c(
   "La_Réunion"      = "yellow3",
   "Mauritius"       = "darkgoldenrod4", 
   "Philippines"     = "khaki3",
-  "Vietnam"         = "orange",
+  "Vietnam"         = "#ffaac6f2",
   
   "Brazil"          = "#ff34b3f2",  
   "Cameroon"        = "#d02090f2",
@@ -156,7 +157,7 @@ population_order <- c(
 )
 
 # define order of countries in legend
-legend_order <- c("Indonesia", "Brazil", "Cameroon", "Christmas_Island", "Fiji", "Malaysia", "Singapore", "Sri_Lanka", "Vanuatu", "China", "La_Réunion", "Mauritius", "Philippines", "Taiwan", "Vietnam",
+legend_order <- c("Indonesia", "Brazil", "Cameroon", "Christmas_Island", "Fiji", "Malaysia", "Singapore", "Sri_Lanka", "Vanuatu", "Vietnam", "China", "La_Réunion", "Mauritius", "Philippines", "Taiwan",
                   "Albania", "Croatia", "France", "Germany", "Greece", "Israel", "Italy", "Malta", "Montenegro", "Serbia", "Slovenia", "Spain", "Switzerland", "Turkey", "USA")
 
 # 2. Hardcode this custom layout order into your dataset column
@@ -179,11 +180,11 @@ p12_global <- ggplot(df_all, aes(PC1, PC2, fill = pop, shape = pop, text = paste
   scale_fill_manual(values = color_map, breaks = legend_order) +
   scale_shape_manual(values = shape_map, breaks = legend_order) +
   
-  labs(title = "All Populations", x = xlab_pc1, y = ylab_pc2, fill = "Population", shape = "Population") +
+  labs(x = xlab_pc1, y = ylab_pc2, fill = "Population", shape = "Population") +
   theme_classic() +
   theme(
     legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16),
+    #legend.title = element_text(size = 16),
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),
     plot.title = element_text(size = 18)
@@ -218,11 +219,11 @@ p13_global <- ggplot(df_all, aes(PC1, PC3, fill = pop, shape = pop, text = paste
   scale_fill_manual(values = color_map, breaks = legend_order) +
   scale_shape_manual(values = shape_map, breaks = legend_order) +
   
-  labs(title = "All Populations", x = xlab_pc1, y = ylab_pc3, fill = "Population", shape = "Population") +
+  labs(x = xlab_pc1, y = ylab_pc3, fill = "Population", shape = "Population") +
   theme_classic() +
   theme(
     legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16),
+    #legend.title = element_text(size = 16),
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),
     plot.title = element_text(size = 18)
@@ -257,11 +258,11 @@ p23_global <- ggplot(df_all, aes(PC2, PC3, fill = pop, shape = pop, text = paste
   scale_fill_manual(values = color_map, breaks = legend_order) +
   scale_shape_manual(values = shape_map, breaks = legend_order) +
   
-  labs(title = "All Populations", x = xlab_pc2, y = ylab_pc3, fill = "Population", shape = "Population") +
+  labs(x = xlab_pc2, y = ylab_pc3, fill = "Population", shape = "Population") +
   theme_classic() +
   theme(
     legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16),
+    #legend.title = element_text(size = 16),
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),
     plot.title = element_text(size = 18)
