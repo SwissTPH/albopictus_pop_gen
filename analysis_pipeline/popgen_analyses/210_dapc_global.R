@@ -43,6 +43,38 @@ grp <- find.clusters(genind_imp, max.n.clust=50, n.pca = 170)
 grp <- find.clusters(genind_imp, max.n.clust=50, n.pca = 340, n.clust=4)
 table(pop(genind_imp), grp$grp)
 
+#                   1  2  3  4
+# Albania           0  6  0  0
+# Brazil            5  0  0  0
+# Cameroon          6  0  0  0
+# Christmas_Island  4  0  0  0
+# Croatia           0  9  0  0
+# Fiji              2  0  0  0
+# France            0 15  0  0
+# Germany           0  2  0  0
+# Greece            2  5  0  0
+# China             0  0 38  0
+# Israel            0  3  1  0
+# Italy             1 22  0  0
+# La_Réunion        0  0  7  0
+# Malta             0  4  0  0
+# Mauritius         0  0  3  0
+# Montenegro        0  4  0  0
+# Serbia            0  5  0  0
+# Slovenia          0  4  0  0
+# Spain             0 31  2  0
+# Sri_Lanka         3  0  0  0
+# Switzerland       0 41  0  0
+# Taiwan            0  0 14  0
+# Turkey            0 16  0  0
+# USA               0  6  0  0
+# Vanuatu           5  0  0  0
+# Indonesia         0  0  0 31
+# Malaysia         34  0  0  0
+# Philippines       0  0  2  0
+# Singapore         2  0  0  0
+# Vietnam           4  0  2  0
+
 #-------------------------------------------------------------------------------
 # use cross-validation to define the number of PCs to retain
 xval <- xvalDapc(genind_imp, grp$grp, 
