@@ -207,7 +207,7 @@ gen <- vcfR2genind(vcf)
 
 # Match metadata and filter populations
 pop(gen) <- popmap$pop[match(indNames(gen), popmap$IID)]
-gen <- gen[!(pop(gen) %in% excluded_pops_global)]
+gen <- gen[!(pop(gen) %in% excluded_pops_europe)]
 
 # Convert to hierfstat format and run basic stats
 hf_data <- genind2hierfstat(gen)
@@ -221,18 +221,35 @@ he_summary_europe <- data.frame(
   pop = names(mean_He),
   Mean_He = round(as.numeric(mean_He), 3))
 
+#-------------------------------------------------------------------------------
+# calculate private alleles count per population
+pa_matrix <- private_alleles(gen, count.alleles = TRUE)
+pa_matrix
+
+# sum the private alleles across all loci for each population
+pa_counts <- rowSums(pa_matrix, na.rm = TRUE)
+
+# create a clean data frame
+pa_df <- data.frame(
+  pop = names(pa_counts),
+  Private_Alleles = as.numeric(pa_counts))
+
 
 #-------------------------------------------------------------------------------
-# Merge Ho and He tables and export combined table (global dataset)
+# merge metrics tables and export combined table (european dataset)
+# for the combined table I ran the code without excluding any populations in order to have a complete table
 
 combined_summary <- ho_summary_europe %>%
   left_join(he_summary_europe, by = "pop") %>%
+  left_join(pa_df, by = "pop") %>%
   rename(Country = pop) %>%
-  arrange(desc(native_invasive), desc(Mean_Ho))
+  mutate(Private_Alleles = ifelse(is.na(Private_Alleles), 0, Private_Alleles)) %>%
+  arrange(Country)
 
-# Export combined tables
-write.xlsx(combined_summary, file.path(path, "Europe_Heterozygosity_Summary_Ho_He.xlsx"), rowNames = FALSE)
-write.csv(combined_summary, file.path(path, "Europe_Heterozygosity_Summary_Ho_He.csv"), row.names = FALSE)
+# export combined tables
+write.xlsx(combined_summary, file.path(path, "Europe_metrics_summary.xlsx"), rowNames = FALSE)
+write.csv(combined_summary, file.path(path, "Europe_metrics_summary.csv"), row.names = FALSE)
+
 
 #-------------------------------------------------------------------------------
 # create plots for observed heterozygosity
