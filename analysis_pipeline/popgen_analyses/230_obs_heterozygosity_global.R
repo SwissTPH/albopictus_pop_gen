@@ -86,7 +86,7 @@ he_summary <- data.frame(
 combined_summary <- ho_summary %>%
   left_join(he_summary, by = "pop") %>%
   rename(Country = pop) %>%
-  arrange(desc(native_invasive), desc(Mean_Ho))
+  arrange(Country)
 
 # Export combined tables
 write.xlsx(combined_summary, file.path(path, "Global_Heterozygosity_Summary_Ho_He.xlsx"), rowNames = FALSE)
@@ -152,7 +152,7 @@ ggsave(file.path(path, "ho_plot_ordered_range_global.svg"), ho_plot3, width = 9,
 
 
 #===============================================================================
-# do the same with the European dataset
+# do the same with the European dataset, and calculate private alleles and FIS
 #===============================================================================
 
 # set directories
@@ -197,60 +197,6 @@ ho_summary_europe <- het %>%
     Mean_Ho = round(mean(Ho, na.rm = TRUE), 3),
     .groups = "drop")
 
-
-#-------------------------------------------------------------------------------
-# Calculate expected heterozygosity (global dataset)
-
-# read VCF and convert to genind
-vcf <- read.vcfR("U:/Sarah/Genomic Analysis TM/Analyses/FM_0.65_mD_3_MD_30_FMi_0.3_LD_thin_EU_no_BGR_GER.vcf")
-gen <- vcfR2genind(vcf)
-
-# Match metadata and filter populations
-pop(gen) <- popmap$pop[match(indNames(gen), popmap$IID)]
-gen <- gen[!(pop(gen) %in% excluded_pops_europe)]
-
-# Convert to hierfstat format and run basic stats
-hf_data <- genind2hierfstat(gen)
-basic_stats <- basic.stats(hf_data)
-
-# Compute mean He (Hs) across loci per population
-He_matrix <- basic_stats$Hs
-mean_He <- colMeans(He_matrix, na.rm = TRUE)
-
-he_summary_europe <- data.frame(
-  pop = names(mean_He),
-  Mean_He = round(as.numeric(mean_He), 3))
-
-#-------------------------------------------------------------------------------
-# calculate private alleles count per population
-pa_matrix <- private_alleles(gen, count.alleles = TRUE)
-pa_matrix
-
-# sum the private alleles across all loci for each population
-pa_counts <- rowSums(pa_matrix, na.rm = TRUE)
-
-# create a clean data frame
-pa_df <- data.frame(
-  pop = names(pa_counts),
-  Private_Alleles = as.numeric(pa_counts))
-
-
-#-------------------------------------------------------------------------------
-# merge metrics tables and export combined table (european dataset)
-# for the combined table I ran the code without excluding any populations in order to have a complete table
-
-combined_summary <- ho_summary_europe %>%
-  left_join(he_summary_europe, by = "pop") %>%
-  left_join(pa_df, by = "pop") %>%
-  rename(Country = pop) %>%
-  mutate(Private_Alleles = ifelse(is.na(Private_Alleles), 0, Private_Alleles)) %>%
-  arrange(Country)
-
-# export combined tables
-write.xlsx(combined_summary, file.path(path, "Europe_metrics_summary.xlsx"), rowNames = FALSE)
-write.csv(combined_summary, file.path(path, "Europe_metrics_summary.csv"), row.names = FALSE)
-
-
 #-------------------------------------------------------------------------------
 # create plots for observed heterozygosity
 
@@ -283,5 +229,68 @@ ho_plot2
 
 ggsave(file.path(path, "ho_plot_ordered_Ho_europe.png"), ho_plot2, width = 9, height = 10, dpi = 600)
 ggsave(file.path(path, "ho_plot_ordered_Ho_europe.svg"), ho_plot2, width = 9, height = 10, dpi = 600)
+
+#-------------------------------------------------------------------------------
+# Calculate expected heterozygosity (global dataset)
+
+# read VCF and convert to genind
+vcf <- read.vcfR("U:/Sarah/Genomic Analysis TM/Analyses/FM_0.65_mD_3_MD_30_FMi_0.3_LD_thin_EU_no_BGR_GER.vcf")
+gen <- vcfR2genind(vcf)
+
+# match metadata and filter populations
+pop(gen) <- popmap$pop[match(indNames(gen), popmap$IID)]
+gen <- gen[!(pop(gen) %in% excluded_pops_europe)]
+
+# convert to hierfstat format and run basic stats
+hf_data <- genind2hierfstat(gen)
+basic_stats <- basic.stats(hf_data)
+
+# compute mean He (Hs) across loci per population
+He_matrix <- basic_stats$Hs
+mean_He <- colMeans(He_matrix, na.rm = TRUE)
+
+# create data frame
+he_summary_europe <- data.frame(
+  pop = names(mean_He),
+  Mean_He = round(as.numeric(mean_He), 3))
+
+#-------------------------------------------------------------------------------
+# calculate private alleles count per population
+pa_matrix <- private_alleles(gen, count.alleles = TRUE)
+pa_matrix
+
+# sum the private alleles across all loci for each population
+pa_counts <- rowSums(pa_matrix, na.rm = TRUE)
+
+# create data frame
+pa_df <- data.frame(
+  pop = names(pa_counts),
+  Private_Alleles = as.numeric(pa_counts))
+
+#-------------------------------------------------------------------------------
+# extract inbreeding coefficient per population
+Fis_matrix <- basic_stats$Fis
+
+fis_df <- data.frame(
+  pop = colnames(Fis_matrix),
+  Mean_Fis = round(colMeans(Fis_matrix, na.rm = TRUE), 3)
+)
+
+#-------------------------------------------------------------------------------
+# merge metrics tables and export combined table (european dataset)
+
+combined_summary <- ho_summary_europe %>%
+  left_join(he_summary_europe, by = "pop") %>%
+  left_join(pa_df, by = "pop") %>%
+  left_join(fis_df, by = "pop") %>%
+  rename(Population = pop) %>%  # Changed label to Population since these are regional sub-populations
+  mutate(Private_Alleles = ifelse(is.na(Private_Alleles), 0, Private_Alleles)) %>%
+  arrange(Population)
+
+# export combined tables
+write.xlsx(combined_summary, file.path(path, "Europe_metrics_summary.xlsx"), rowNames = FALSE)
+write.csv(combined_summary, file.path(path, "Europe_metrics_summary.csv"), row.names = FALSE)
+
+
 
 
