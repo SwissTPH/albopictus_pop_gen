@@ -1,5 +1,5 @@
 #===============================================================================
-# Plot observed heterozygosity calculated by VCFtools (global dataset)
+# Calculate various metrics of genetic diversity (at Global and European level)
 # 23.06.2026
 # Sarah Marmorosch
 #===============================================================================
@@ -93,7 +93,7 @@ write.xlsx(combined_summary, file.path(path, "Global_Heterozygosity_Summary_Ho_H
 write.csv(combined_summary, file.path(path, "Global_Heterozygosity_Summary_Ho_He.csv"), row.names = FALSE)
 
 #-------------------------------------------------------------------------------
-# create plots for observed heterozygosity
+# create plots for observed heterozygosity (global dataset)
 
 # boxplot sorted alphabetically
 ho_plot1 <- ggplot(het, aes(x = Ho, y = pop_label)) +
@@ -198,7 +198,7 @@ ho_summary_europe <- het %>%
     .groups = "drop")
 
 #-------------------------------------------------------------------------------
-# create plots for observed heterozygosity
+# create plots for observed heterozygosity (european dataset)
 
 # boxplot sorted alphabetically
 ho_plot1 <- ggplot(het, aes(x = Ho, y = pop_label)) +
@@ -231,7 +231,7 @@ ggsave(file.path(path, "ho_plot_ordered_Ho_europe.png"), ho_plot2, width = 9, he
 ggsave(file.path(path, "ho_plot_ordered_Ho_europe.svg"), ho_plot2, width = 9, height = 10, dpi = 600)
 
 #-------------------------------------------------------------------------------
-# Calculate expected heterozygosity (global dataset)
+# Calculate expected heterozygosity (european dataset)
 
 # read VCF and convert to genind
 vcf <- read.vcfR("U:/Sarah/Genomic Analysis TM/Analyses/FM_0.65_mD_3_MD_30_FMi_0.3_LD_thin_EU_no_BGR_GER.vcf")
