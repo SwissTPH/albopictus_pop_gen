@@ -12,8 +12,8 @@ library(ggplot2)
 library(plotly)
 library(htmlwidgets)
 
-setwd("U:/Sarah/Genomic Analysis TM/Analyses/PCA/201_pca_EU_USA_ISR")
-path <- "U:/Sarah/Genomic Analysis TM/Analyses/PCA/201_pca_EU_USA_ISR"
+setwd("C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/201_pca_europe")
+path <- "C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/201_pca_europe"
 
 # read VCF
 vcf <- read.vcfR("U:/Sarah/Genomic Analysis TM/Analyses/FM_0.65_mD_3_MD_30_FMi_0.3_LD_thin_EU_no_BGR_GER.vcf")

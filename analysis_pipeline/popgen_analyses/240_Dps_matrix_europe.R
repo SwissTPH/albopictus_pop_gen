@@ -17,8 +17,8 @@ library(tidyr)
 library(phangorn)
 
 # set directories
-setwd("U:/Sarah/Genomic Analysis TM/Analyses/network/240_Dps_matrix_europe")
-path <- "U:/Sarah/Genomic Analysis TM/Analyses/network/240_Dps_matrix_europe"
+setwd("C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/240_Dps_matrix_europe")
+path <- "C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/240_Dps_matrix_europe"
 
 #-------------------------------------------------------------------------------
 # reading the vcf file

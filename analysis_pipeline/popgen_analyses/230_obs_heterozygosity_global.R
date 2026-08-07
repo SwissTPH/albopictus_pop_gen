@@ -13,8 +13,8 @@ library(adegenet)
 library(hierfstat)
 
 # set directories
-setwd("U:/Sarah/Genomic Analysis TM/Analyses/diversity_metrics/230_observed_heterozygosity/global")
-path <- "U:/Sarah/Genomic Analysis TM/Analyses/diversity_metrics/230_observed_heterozygosity/global"
+setwd("C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/230_observed_heterozygosity/global")
+path <- "C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/230_observed_heterozygosity/global"
 
 
 #-------------------------------------------------------------------------------

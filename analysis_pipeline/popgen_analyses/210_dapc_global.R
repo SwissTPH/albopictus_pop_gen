@@ -10,8 +10,8 @@ library(pegas)
 library(poppr)
 library(svglite)
 
-setwd("U:/Sarah/Genomic Analysis TM/Analyses/DAPC/210_dapc_global")
-path <- "U:/Sarah/Genomic Analysis TM/Analyses/DAPC/210_dapc_global"
+setwd("C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/210_dapc_global")
+path <- "C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/210_dapc_global"
 
 #-------------------------------------------------------------------------------
 
