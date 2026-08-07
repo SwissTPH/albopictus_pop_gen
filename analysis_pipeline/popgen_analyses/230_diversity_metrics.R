@@ -13,12 +13,12 @@ library(adegenet)
 library(hierfstat)
 
 # set directories
-setwd("C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/230_observed_heterozygosity/global")
-path <- "C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/230_observed_heterozygosity/global"
+setwd("C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/230_diversity_metrics/global")
+path <- "C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/230_diversity_metrics/global"
 
 
 #-------------------------------------------------------------------------------
-# Calculate observed heterozygosity (global dataset)
+# calculate observed heterozygosity (global dataset)
 
 excluded_pops_global <- c("Bulgaria", "Liechtenstein", "Sri_Lanka", "Fiji", "Mauritius", "Germany", "Singapore", "Philippines")
 
@@ -156,8 +156,8 @@ ggsave(file.path(path, "ho_plot_ordered_range_global.svg"), ho_plot3, width = 9,
 #===============================================================================
 
 # set directories
-setwd("U:/Sarah/Genomic Analysis TM/Analyses/diversity_metrics/230_observed_heterozygosity/europe")
-path <- "U:/Sarah/Genomic Analysis TM/Analyses/diversity_metrics/230_observed_heterozygosity/europe"
+setwd("C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/230_diversity_metrics/europe")
+path <- "C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/analyses/popgen_analyses/230_diversity_metrics/europe"
 
 excluded_pops_europe <- c("GRC-South", "Montenegro")
 
