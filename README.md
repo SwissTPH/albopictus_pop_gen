@@ -20,3 +20,5 @@ This repository contains a ddRAD-seq analysis pipeline for <i>Aedes albopictus</
 <b>030_test_thresholds.sh</b>: Different combinations of SNP missingness and minimum depth thresholds were applied, and the resulting VCF files were inspected in a Jupyter notebook (<b>031_inspect_thresholds.ipynb</b>) to identify an optimal balance between data quality and SNP retention. 
 
 <b>040_FMi_and_LD_filter.sh</b>: Final SNP filtering based on the most promising combinations of SNP missingness, minimum depth and missing data per individual thresholds. Furthermore, SNPs were pruned for linkage disequilibrium using `PLINK`.
+
+<b>041_SNP_filtering_reduced_vcf.sh</b>: Separate filtering of reduced dataset containing the samples from Europe, the USA and Israel using the same filtering thresholds as in the global dataset. 
