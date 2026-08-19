@@ -26,7 +26,7 @@ excluded_pops_global <- c("Bulgaria", "Liechtenstein", "Sri_Lanka", "Fiji", "Mau
 het <- read.table("obs_heterozygosity_global.het", header = TRUE)
 
 # load population map
-popmap <- read.table("U:/Sarah/Genomic Analysis TM/Analyses/popmap_albo_country.txt")
+popmap <- read.table("C:/Users/marmsa/OneDrive - Swiss TPH/Albopictus_ddRAD/data/population_maps/popmap_albo_country.txt")
 colnames(popmap) <- c("IID", "pop","native_invasive")
 
 # compute observed heterozygosity per individual
@@ -44,7 +44,7 @@ het <- het %>%
 # add label with sample size
 het <- het %>%
   group_by(pop) %>%
-  mutate(pop_label = paste(pop, "( n = ", n(), ")")) %>%
+  mutate(pop_label = paste(pop, "(n = ", n(),")")) %>%
   ungroup()
 
 # calculate mean Ho summary table per country
@@ -125,7 +125,8 @@ ho_plot2
 ggsave(file.path(path, "ho_plot_ordered_Ho_global.png"), ho_plot2, width = 9, height = 10, dpi = 600)
 ggsave(file.path(path, "ho_plot_ordered_Ho_global.svg"), ho_plot2, width = 9, height = 10, dpi = 600)
 
-# boxplot sorted by native vs invasive range
+# boxplot sorted by native and invasive range and descending Ho
+
 het_ordered <- het %>%
   group_by(pop_label) %>%
   mutate(median_Ho = median(Ho, na.rm = TRUE)) %>%
@@ -143,11 +144,60 @@ ho_plot3 <- ggplot(het_ordered, aes(x = Ho, y = pop_label)) +
   xlim(c(0.02, 0.06)) +
   theme(axis.text.y = element_text(size = 11))
 
-ho_plot3
+# boxplot sorted by native and invasive range and geographic location
 
-ggsave(file.path(path, "ho_plot_ordered_range_global.png"), ho_plot3, width = 9, height = 10, dpi = 600)
-ggsave(file.path(path, "ho_plot_ordered_range_global.svg"), ho_plot3, width = 9, height = 10, dpi = 600)
+invasive_geo_order <- c(
+  "Switzerland", 
+  "France", 
+  "Spain",
+  "Italy", 
+  "Malta",
+  "Slovenia", 
+  "Croatia", 
+  "Montenegro", 
+  "Albania", 
+  "Serbia", 
+  "Greece", 
+  "Turkey",
+  "Israel",
+  "USA", 
+  "Brazil",
+  "Cameroon", 
+  "La_Réunion",
+  "Christmas_Island", 
+  "Vanuatu"
+)
 
+het_ordered <- het %>%
+  group_by(pop) %>%
+  mutate(median_Ho = median(Ho, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(
+    geo_rank = case_when(native_invasive == "invaded" ~ match(pop, invasive_geo_order),
+      TRUE ~ 100 + dense_rank(median_Ho)) # sort native range by Ho
+  ) %>%
+  arrange(native_invasive, desc(geo_rank)) %>%
+  mutate(pop_label = fct_inorder(pop_label))
+
+
+ho_plot4 <- ggplot(het_ordered, aes(x = Ho, y = pop_label)) +
+  geom_boxplot(fill = "grey", outlier.shape = NA, alpha = 0.7) +
+  geom_jitter(height = 0.05, width = 0, size = 1, alpha = 0.4) +
+  facet_grid(native_invasive ~ ., scales = "free_y", space = "free_y") +
+  theme_bw() +
+  ylab("Country") +
+  xlab("Observed Heterozygosity (Ho)") +
+  xlim(c(0.02, 0.06)) +
+  theme(
+    axis.text.y = element_text(size = 11),
+    strip.text = element_text(size = 11, face = "bold")
+  )
+
+ho_plot4
+
+
+ggsave(file.path(path, "ho_plot_ordered_range_global_geography.png"), ho_plot4, width = 9, height = 10, dpi = 600)
+ggsave(file.path(path, "ho_plot_ordered_range_global_geography.svg"), ho_plot4, width = 9, height = 10, dpi = 600)
 
 
 
@@ -283,7 +333,7 @@ combined_summary <- ho_summary_europe %>%
   left_join(he_summary_europe, by = "pop") %>%
   left_join(pa_df, by = "pop") %>%
   left_join(fis_df, by = "pop") %>%
-  rename(Population = pop) %>%  # Changed label to Population since these are regional sub-populations
+  rename(Population = pop) %>%
   mutate(Private_Alleles = ifelse(is.na(Private_Alleles), 0, Private_Alleles)) %>%
   arrange(Population)
 

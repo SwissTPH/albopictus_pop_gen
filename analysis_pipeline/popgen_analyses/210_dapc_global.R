@@ -38,7 +38,7 @@ genind_imp <- missingno(genind_data, type = "mean")
 #-------------------------------------------------------------------------------
 # perform DAPC
 
-grp <- find.clusters(genind_imp, max.n.clust=50, n.pca = 170)
+grp <- find.clusters(genind_imp, max.n.clust=50, n.pca = 340)
 
 grp <- find.clusters(genind_imp, max.n.clust=50, n.pca = 340, n.clust=4)
 table(pop(genind_imp), grp$grp)
